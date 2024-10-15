@@ -28,20 +28,13 @@ class hashMap {
     }
     resize() {
         let newArray = Array(this.maxLength * 2);
-        //am creat un nou array, acum trebuie sa parcurgem vechiul array adica this.buckets;
         for(let i = 0; i <= this.maxLength; i++) {
-            //parcurgem this.buckets
             if(this.buckets[i] != null) {
-                //cand gasim in array ceva diferit de null (adica o lista), salvam in currentList
                 let currentList = this.buckets[i];
-                //trecem prin fiecare element din lista
                 let tmp = currentList.firstNode;
                 while(tmp != null) {
-                    //fiecare element are ca si value un pair, care are key si value la randul lui
                     if(newArray[hash(tmp.value.key, this.maxLength*2)] === undefined) {
-                        //daca nu avem element, construim o lista
                         let currentList = new LinkedList();
-                        //construim nodul caruia ii atribuim ca si value, valoarea nodului la care ne aflam in parcurgere
                         let currentNode = new Node(tmp.value)
                         currentList.append(currentNode);
                         newArray[hash(tmp.value.key, this.maxLength*2)] = currentList;
@@ -51,7 +44,6 @@ class hashMap {
                         newArray[hash(tmp.value.key, this.maxLength*2)] = currentList;
                     }
                     tmp = tmp.nextNode;
-                    //trecem la urmatorul nod
                 }
             }
         }
@@ -64,37 +56,29 @@ class hashMap {
             throw new Error("Trying to access index out of bound");
         }
         if(this.capacity == this.loadFactor) {
-            console.log("capacitate maxima, facem resize");
             this.resize();
         }
         if(this.buckets[hash(key, this.maxLength)] === undefined) {
-            //daca nu avem element la locatie, facem o lista, construim perechea care are ca si valoare key si value si o atribuim nodului si adaugam nodul in lista.
             let currentList = this.buckets[hash(key, this.maxLength)] = new LinkedList();
             let currentPair = new Pair(key, value);
             let currentNode = new Node(currentPair);
             currentList.append(currentNode)
             this.length++;
         } else {
-            //daca avem element la locatie, automat este o lista
             let currentList = this.buckets[hash(key, this.maxLength)];
             let tmp = currentList.firstNode;
             let foundFlag = false;
             while(tmp != null) {
-                //parcurgem toate elem din lista si verificam daca gasim un element care acelasi key ca si cel actual
                 if(tmp.value.key == key) {
                     tmp.value.value = value;
                     foundFlag = true;
-                    console.log("am gasit element cu aceeasi cheie si i-am schimbat valoarea")
-                    //daca gasim elementul, ii atribuim noua valoare si trecem flag-ul true;
                 }
                 tmp = tmp.nextNode;
             }
             if(foundFlag == false) {
-                //daca n-a fost gasit element care sa aiba aceeasi cheie, construim alta pereche
                 let currentPair = new Pair(key, value);
                 let currentNode = new Node(currentPair)
                 currentList.append(currentNode);
-                //dupa ce am adaugat in list nodul, notam noua marime ca fiind mai mare cu 1
                 this.length++;
                 this.capacity = this.length / this.maxLength
             }
@@ -143,7 +127,6 @@ class hashMap {
                         while(count != index-1) {
                             tmp = tmp.nextNode;
                         }
-                        //avem elementul care se afla inaintea celui pe care vrem sa il stergem
                         tmp.nextNode = tmp.nextNode.nextNode;
                         this.buckets[hash(key, this.maxLength)].lastIndex--;
                         this.length--;
